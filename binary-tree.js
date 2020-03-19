@@ -45,35 +45,30 @@ class BinaryTree {
   maxDepth() {
     if (!this.root) return 0;
 
-    let binaryNodes = [this.root];
+    let longestDepth = 0;
 
-    let longestArr = [];
-
-    function moveToNextNode(node, longest = 1) {
+    function moveToNextNode(node, pathCounter = 1) {
+      //if no left or right nodes 
       if (node.left === null && node.right === null) {
-        longestArr.push(longest);
+        if (pathCounter > longestDepth) {
+          longestDepth = pathCounter;
+        }
+        return longestDepth;
       }
+      //if no left node
+      if (node.left === null) return moveToNextNode(node.right, pathCounter + 1);
+      // if no right node
+      if (node.right === null) return moveToNextNode(node.left, pathCounter + 1);
 
-      // if there's a left & right node
-      if (node.left && node.right) {
-        // move to left node
-        return moveToNextNode(node.left, longest += 1);
-      }
-      else if (node.right !== null) {
-
-        // return moveToNextNode(node.right, longest += 1);
-      }
-      else {
-
-      }
-
-
+      // if there's both a left and right node
+      // or traverse through left, return traverse of right
+      moveToNextNode(node.left, pathCounter + 1);
+      return moveToNextNode(node.right, pathCounter + 1);
+      // return the max of left path or right path 
+      // return Math.max((moveToNextNode(node.left, pathCounter + 1), moveToNextNode(node.right, pathCounter + 1)));
     }
-    moveToNextNode(binaryNodes[0]);
-    console.log(binaryNodes[0].left)
-    console.log(binaryNodes[0].right)
-    console.log(longestArr)
-    return Math.max(longestArr);
+
+    return moveToNextNode(this.root);
   }
 
   /** maxSum(): return the maximum sum you can obtain by traveling along a path in the tree.
